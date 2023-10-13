@@ -10,7 +10,7 @@ import (
 
 type DBParams struct {
 	Host     string        `yaml:"host" env-default:"mongodb://localhost:27017" env-required:"true"`
-	Port     string        `yaml:"port" env-default:"5432"`
+	Port     int           `yaml:"port" env-default:"5432"`
 	Timeout  time.Duration `yaml:"timeout" env-default:"10s"`
 	User     string        `yaml:"user"`
 	Password string        `yaml:"password"`
@@ -23,18 +23,10 @@ type HTTPServer struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
 }
 
-type STANSubscriber struct {
-	Server    string `yaml:"server" env-default:"nats://127.0.0.1:4222" env-required:"true"`
-	Cluster   string `yaml:"cluster" env-default:"wb-practice" env-required:"true"`
-	Channel   string `yaml:"channel" env-default:"lzero"`
-	Client    string `yaml:"client" env-default:"service_listener"`
-	TimeDelta string `yaml:"time_delta"`
-}
-
 type Config struct {
-	DBParams       `yaml:"database"`
-	HTTPServer     `yaml:"http-server"`
-	STANSubscriber `yaml:"stan-sub"`
+	CacheVolume uint8 `yaml:"cache-volume"`
+	DBParams    `yaml:"database"`
+	HTTPServer  `yaml:"http-server"`
 }
 
 func MustLoadConfig() *Config {

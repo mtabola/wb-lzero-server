@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func MustLoadServer(cfg *config.HTTPServer) {
+func MustLoadServer(cfg *config.HTTPServer, h *handlers.Handler) {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
@@ -20,8 +20,8 @@ func MustLoadServer(cfg *config.HTTPServer) {
 	router.Use(middleware.URLFormat)
 
 	router.Route("/orders", func(r chi.Router) {
-		r.Get("/", handlers.GetAllOrders)
-		r.Post("/", handlers.SaveOrder)
+		r.Get("/", h.GetAllOrders)
+		r.Post("/", h.SaveOrder)
 	})
 
 	srv := &http.Server{
