@@ -7,7 +7,7 @@ import (
 )
 
 type Store struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
 func New(dbcp config.DBParams) (*Store, error) {
@@ -27,5 +27,5 @@ func New(dbcp config.DBParams) (*Store, error) {
 		return nil, err
 	}
 
-	return &Store{DB: db}, nil
+	return &Store{db}, nil
 }

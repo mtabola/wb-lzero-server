@@ -4,21 +4,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"server/internal/db"
+	"server/internal/cache"
 	"server/internal/models"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 )
 
 type Handler struct {
-	store    *db.Store
+	cache    *cache.Cache
 	validate *validator.Validate
 }
 
 type Response struct {
 	Status int
-	Data   string
+	Data   interface{}
 }
 
 type Request struct {
@@ -27,15 +28,26 @@ type Request struct {
 	Timestamp int64  `json:"timestamp"`
 }
 
-func New(db *db.Store, v *validator.Validate) *Handler {
-	return &Handler{store: db, validate: v}
+func New(c *cache.Cache, v *validator.Validate) *Handler {
+	return &Handler{cache: c, validate: v}
 }
 
-func (h *Handler) GetAllOrders(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetOrder(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	uid := chi.URLParam(r, "id")
+
+	ord, err := h.cache.Get(uid)
+	if err != nil {
+		render.JSON(w, r, Response{
+			Status: 500,
+			Data:   err.Error(),
+		})
+		return
+	}
+
 	render.JSON(w, r, Response{
 		Status: 200,
-		Data:   "world",
+		Data:   ord,
 	})
 }
 
@@ -72,7 +84,7 @@ func (h *Handler) SaveOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.store.CreateOrder(data)
+	err = h.cache.PutInCacheAndDB(data.OrderUid, data)
 	if err != nil {
 		render.JSON(w, r, Response{
 			Status: 500,

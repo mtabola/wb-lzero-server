@@ -20,7 +20,7 @@ func MustLoadServer(cfg *config.HTTPServer, h *handlers.Handler) {
 	router.Use(middleware.URLFormat)
 
 	router.Route("/orders", func(r chi.Router) {
-		r.Get("/", h.GetAllOrders)
+		r.Get("/{id}", h.GetOrder)
 		r.Post("/", h.SaveOrder)
 	})
 
@@ -34,5 +34,7 @@ func MustLoadServer(cfg *config.HTTPServer, h *handlers.Handler) {
 
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal("server error: ", err)
+	} else {
+		log.Println("Server is running on ", cfg.Address)
 	}
 }

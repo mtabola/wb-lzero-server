@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"server/config"
+	"server/internal/cache"
 	"server/internal/db"
 	"server/internal/handlers"
 	"server/internal/server"
@@ -24,7 +25,13 @@ func main() {
 
 	validate := validator.New()
 
-	handler := handlers.New(db, validate)
+	cache, err := cache.New(cfg.CacheVolume, db)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	handler := handlers.New(cache, validate)
 
 	server.MustLoadServer(&cfg.HTTPServer, handler)
 }
