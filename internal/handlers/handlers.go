@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"server/internal/cache"
@@ -79,7 +80,7 @@ func (h *Handler) SaveOrder(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		render.JSON(w, r, Response{
 			Status: 500,
-			Data:   err.Error(),
+			Data:   errors.New("validation failed, please check essential parameters"),
 		})
 		return
 	}
