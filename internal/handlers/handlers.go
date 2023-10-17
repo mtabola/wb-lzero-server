@@ -80,7 +80,7 @@ func (h *Handler) SaveOrder(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		render.JSON(w, r, Response{
 			Status: 500,
-			Data:   errors.New("validation failed, please check essential parameters"),
+			Data:   errors.New("validation failed, please check essential parameters").Error(),
 		})
 		return
 	}

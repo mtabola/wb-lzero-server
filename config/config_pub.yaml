@@ -1,0 +1,11 @@
+cache-volume: 2
+database:
+  host: "localhost"
+  port: 5432
+  user: "service"
+  password: "*********"
+  dbname: "lzero"
+http-server: 
+  address: "localhost:8100"
+  timeout: 20s
+  idle-timeout: 2m
