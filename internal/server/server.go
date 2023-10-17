@@ -31,10 +31,9 @@ func MustLoadServer(cfg *config.HTTPServer, h *handlers.Handler) {
 		WriteTimeout: cfg.Timeout,
 		IdleTimeout:  cfg.IdleTimeout,
 	}
+	log.Println("starting server on ", cfg.Address)
 
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal("server error: ", err)
-	} else {
-		log.Println("Server is running on ", cfg.Address)
 	}
 }
